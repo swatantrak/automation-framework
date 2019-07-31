@@ -106,7 +106,7 @@ public abstract class BaseTest {
 		else if (DriverType.Chrome.toString().toLowerCase().equals(browserType.toLowerCase())) {
 			/*System.setProperty("webdriver.chrome.driver",
 					Utilities.getPath() + "/src//test//resources//webdriver/chromedriver.exe");*/
-			WebDriverManager.chromedriver().version("74.0.3729.6").setup();
+			WebDriverManager.chromedriver().version("76.0.3809.68").setup();
 			//HashMap<String, Object> chromePrefs = new HashMap<>();
 			/*chromePrefs.put("download.prompt_for_download", "false");
 			chromePrefs.put("profile.default_content_settings.popups", 0);
@@ -245,7 +245,7 @@ public abstract class BaseTest {
 		if (TestListener.status) {
 			TestListener.getTest().log(LogStatus.PASS, message);
 		}
-		logger.info("Message: " + message);
+		logger.info(message);
 		Reporter.log(message);
 	}
 	

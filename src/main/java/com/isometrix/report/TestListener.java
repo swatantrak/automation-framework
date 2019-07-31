@@ -49,6 +49,7 @@ public class TestListener implements ITestListener {
 		getTest().assignAuthor("360Logica");
 		getTest().assignCategory(result.getTestClass().getRealClass().getSimpleName());
 		extent.addSystemInfo("BrowserName", browserType);
+		extent.addSystemInfo("User Name", "360Logica");
 	}
 
 	@Override

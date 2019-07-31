@@ -68,7 +68,8 @@ public abstract class BasePage {
 	}
 
 	/**
-	 * Get browser name
+	 * Get browser name ie. internet explorer, chrome etc
+	 * @return browser name
 	 */
 	public String getBrowserName() {
 		Capabilities cap = ((RemoteWebDriver) getDriver()).getCapabilities();
@@ -77,6 +78,7 @@ public abstract class BasePage {
 
 	/**
 	 * Click On element
+	 * @param element
 	 */
 	public void clickOn(WebElement element) {
 		waitForElement(element);
@@ -89,6 +91,7 @@ public abstract class BasePage {
 
 	/**
 	 * Switch to frame by id or name
+	 * @param id
 	 */
 	public void switchToFrame(String id) {
 		getDriver().switchTo().frame(id);
@@ -102,7 +105,7 @@ public abstract class BasePage {
 	}
 
 	/**
-	 * switchTo new window
+	 * SwitchTo new window
 	 */
 	public void switchToNewWindow() {
 		ArrayList<String> newTab = new ArrayList<String>(getDriver().getWindowHandles());
@@ -118,7 +121,8 @@ public abstract class BasePage {
 	}
 
 	/**
-	 * Click on element by webelement
+	 * JavaScript click on element by webelement
+	 * @param webElement
 	 */
 	public void javascriptButtonClick(WebElement webElement) {
 		waitForElement(webElement);
@@ -128,6 +132,7 @@ public abstract class BasePage {
 
 	/**
 	 * Wait and click on element by web element
+	 * @param element
 	 */
 	public void waitAndClick(WebElement element) {
 		clickOn(element);
@@ -136,6 +141,7 @@ public abstract class BasePage {
 
 	/**
 	 * Wait for page enable
+	 * @param SECONDS
 	 */
 	public void waitForPageEnable(int SECONDS) {
 		sleepExecution(SECONDS);
@@ -150,12 +156,17 @@ public abstract class BasePage {
 
 	/**
 	 * Click on element by string locator
+	 * @param locator
 	 */
 	public void clickOn(String locator) {
 		WebElement el = getDriver().findElement(ByLocator(locator));
 		el.click();
 	}
 
+	/**
+	 * Return Title
+	 * @return
+	 */
 	public String returnTitle() {
 		return title;
 	}
@@ -169,9 +180,9 @@ public abstract class BasePage {
 	}
 
 	/**
-	 * Scroll page down pixel
+	 * Scroll page down with given pixel
 	 * 
-	 * @Param pixel pixel to scroll down
+	 * @Param pixel pixel to scroll down ie. 250
 	 */
 	public void scrollDown(String pixel) {
 		JavascriptExecutor jse = (JavascriptExecutor) driver;
@@ -190,7 +201,7 @@ public abstract class BasePage {
 	 * Scroll page up pixel
 	 * 
 	 * @param pixel
-	 *            pixel to scroll down
+	 *            pixel to scroll up
 	 */
 	public void scrollUp(String pixel) {
 		JavascriptExecutor jse = (JavascriptExecutor) driver;
@@ -198,7 +209,7 @@ public abstract class BasePage {
 	}
 
 	/**
-	 * Scroll to WebElement
+	 * JavaScript scroll to WebElement
 	 * 
 	 * @param element
 	 */
@@ -207,16 +218,27 @@ public abstract class BasePage {
 		js.executeScript("arguments[0].scrollIntoView();", element);
 	}
 
+	/**
+	 * To set Implicit wait
+	 * @param timeInSec
+	 */
 	private void setImplicitWait(int timeInSec) {
 		logger.info("setImplicitWait, timeInSec={}", timeInSec);
 		driver.manage().timeouts().implicitlyWait(timeInSec, TimeUnit.SECONDS);
 	}
 
+	/**
+	 * To reset Implicit wait
+	 */
 	private void resetImplicitWait() {
 		logger.info("resetImplicitWait");
 		driver.manage().timeouts().implicitlyWait(timeout, TimeUnit.SECONDS);
 	}
 
+	/**
+	 * Wait until expected condition
+	 * @param expectedCondition
+	 */
 	public void waitFor(ExpectedCondition<Boolean> expectedCondition) {
 		setImplicitWait(0);
 		WebDriverWait wait = new WebDriverWait(driver, timeout);
@@ -225,8 +247,7 @@ public abstract class BasePage {
 	}
 
 	/**
-	 * First clear default value of input-box then enter new value
-	 * 
+	 * Clear default value of input-box then enter new value
 	 * @param element
 	 * @param text
 	 */
@@ -238,7 +259,6 @@ public abstract class BasePage {
 
 	/**
 	 * Wait for webElement once it is clickable (visible and enabled)
-	 * 
 	 * @param element
 	 */
 	public void waitForElement(WebElement element) {
@@ -252,6 +272,10 @@ public abstract class BasePage {
 
 	}
 
+	/**
+	 * Wait until expected condition visibilityOf
+	 * @param element
+	 */
 	public void waitForElementVisible(WebElement element) {
 		try {
 			WebDriverWait wait = new WebDriverWait(driver, timeout);
@@ -260,19 +284,32 @@ public abstract class BasePage {
 			logger.info(element.toString() + " is not present on page");
 		}
 	}
-
+	
+	/**
+	 * Wait until expected condition visibilityOfElementLocated
+	 * @param locator
+	 */
 	public void waitForElement(String locator) {
 		WebDriverWait wait = new WebDriverWait(driver, timeout);
 		if (locator instanceof String)
 			wait.until(ExpectedConditions.visibilityOfElementLocated(ByLocator(locator)));
 	}
-
+	
+	/**
+	 * Wait until expected condition visibilityOfElementLocated
+	 * @param stringbuilder_locator
+	 * @return true
+	 */
 	public boolean waitForElement(StringBuilder stringbuilder_locator) {
 		WebDriverWait wait = new WebDriverWait(driver, timeout);
 		wait.until(ExpectedConditions.visibilityOfElementLocated(ByLocator(stringbuilder_locator)));
 		return true;
 	}
 
+	/**
+	 * Wait for jQuery.active and document.readyState to be complete
+	 * @return
+	 */
 	public boolean _waitForJStoLoad() {
 		// wait for jQuery to load
 		ExpectedCondition<Boolean> jQueryLoad = new ExpectedCondition<Boolean>() {
@@ -304,7 +341,11 @@ public abstract class BasePage {
 		return waitDone;
 	}
 
-	// Handle locator type
+	/**
+	 * Handle locator type
+	 * @param string locator
+	 * @return ByElement
+	 */
 	public By ByLocator(String locator) {
 		By result = null;
 		if (locator.startsWith("//") || locator.startsWith("(")) {
@@ -322,7 +363,12 @@ public abstract class BasePage {
 		}
 		return result;
 	}
-
+	
+	/**
+	 * Handle locator type
+	 * @param locator
+	 * @return
+	 */
 	public By ByLocator(StringBuilder locator) {
 		By result = null;
 
@@ -336,9 +382,13 @@ public abstract class BasePage {
 		return result;
 	}
 
+	/**
+	 * Return random string with given length
+	 * @param lettersNum expected length
+	 * @return random string
+	 */
 	public static String generateRandomString(int lettersNum) {
 		String finalString = "";
-
 		int numberOfLetters = 25;
 		long randomNumber;
 		for (int i = 0; i < lettersNum; i++) {
@@ -349,7 +399,12 @@ public abstract class BasePage {
 		}
 		return finalString;
 	}
-
+	
+	/**
+	 * Return random number between 0 to expected number
+	 * @param lettersNum expected number
+	 * @return random number in string
+	 */
 	public static String generateRandomNumber(int lettersNum) {
 		String finalString = "9";
 		int letter;
@@ -360,6 +415,11 @@ public abstract class BasePage {
 		return finalString;
 	}
 
+	/**
+	 * Verify current url of the application
+	 * @param url
+	 * @return boolean
+	 */
 	public boolean verifyURL(String url) {
 		boolean value = false;
 		String currentUrl = driver.getCurrentUrl();
@@ -369,14 +429,26 @@ public abstract class BasePage {
 			return value;
 	}
 
+	/**
+	 * Refresh web page or reload
+	 */
 	public void refreshPage() {
 		getDriver().navigate().refresh();
 	}
 
+	/**
+	 * Get current Webdriver instance 
+	 * @return driver
+	 */
 	public WebDriver getDriver() {
 		return driver;
 	}
 
+	/**
+	 * Return WebElement by By locator
+	 * @param by
+	 * @return WebElement
+	 */
 	public WebElement findElement(By by) {
 		if (driver instanceof ChromeDriver || driver instanceof InternetExplorerDriver) {
 			try {
@@ -396,6 +468,9 @@ public abstract class BasePage {
 		return null;
 	}
 
+	/**
+	 * Verify web page title
+	 */
 	public void assertByPageTitle() {
 		try {
 			if (driver instanceof ChromeDriver || driver instanceof InternetExplorerDriver
@@ -407,6 +482,10 @@ public abstract class BasePage {
 		Assert.assertTrue(returnTitle().equals(driver.getTitle()));
 	}
 
+	/**
+	 * Return all link of page in list
+	 * @return List<String>
+	 */
 	public List<String> findAllLinksOnPage() {
 		List<String> links = new ArrayList<String>();
 		List<WebElement> linkElements = driver.findElements(By.tagName("a"));
@@ -420,6 +499,11 @@ public abstract class BasePage {
 		return links;
 	}
 
+	/**
+	 * Check response code and return code 200 or 403
+	 * @param link
+	 * @return code 200 or 403
+	 */
 	public boolean isResponseForLinkTwoHundredOrThreeOTwo(String link) {
 		int code = 0;
 		Reporter.log("Link: " + link);
@@ -439,10 +523,19 @@ public abstract class BasePage {
 		return code == 200 || code == 302;
 	}
 
+	/**
+	 * Set implicitly wait in seconds
+	 * @param driver
+	 * @param waitTime
+	 */
 	public void setWaitTime(WebDriver driver, int waitTime) {
 		driver.manage().timeouts().implicitlyWait(waitTime, TimeUnit.SECONDS);
 	}
 
+	/**
+	 * Set implicitly wait zero seconds
+	 * @param driver
+	 */
 	public void setWaitTimeToZero(WebDriver driver) {
 		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 	}
@@ -458,6 +551,12 @@ public abstract class BasePage {
 		// setWaitTime(driver, DEFAULT_WAIT_4_ELEMENT);
 	}
 
+	/**
+	 * Wait for element clickable
+	 * @param webElement
+	 * @param timeOutInSeconds
+	 * @return WebElement
+	 */
 	public WebElement waitForElementClickable(WebElement webElement, int timeOutInSeconds) {
 		WebElement element;
 		try {
@@ -474,6 +573,12 @@ public abstract class BasePage {
 		return null;
 	}
 
+	/**
+	 * Wait for element present by By locator
+	 * @param by
+	 * @param timeOutInSeconds
+	 * @return WebElement
+	 */
 	public WebElement waitForElementPresent(final By by, int timeOutInSeconds) {
 		WebElement element;
 		try {
@@ -490,6 +595,12 @@ public abstract class BasePage {
 		return null;
 	}
 
+	/**
+	 * Wait for element present by WebElement
+	 * @param webElement
+	 * @param timeOutInSeconds
+	 * @return WebElement
+	 */
 	public WebElement waitForElementPresent(WebElement webElement, int timeOutInSeconds) {
 		WebElement element;
 		try {
@@ -502,6 +613,13 @@ public abstract class BasePage {
 		return null;
 	}
 
+	/**
+	 * Wait for text present in Element using WebElement
+	 * @param webElement
+	 * @param text
+	 * @param timeOutInSeconds
+	 * @return boolean
+	 */
 	public boolean waitForTextPresentInElement(WebElement webElement, String text, int timeOutInSeconds) {
 		boolean notVisible;
 		WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
@@ -510,6 +628,13 @@ public abstract class BasePage {
 		return notVisible;
 	}
 
+	/**
+	 * Wait for text present in Element using By locator
+	 * @param by
+	 * @param text
+	 * @param timeOutInSeconds
+	 * @return
+	 */
 	public boolean waitForTextPresentInElement(By by, String text, int timeOutInSeconds) {
 		boolean notVisible;
 		WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
@@ -518,6 +643,11 @@ public abstract class BasePage {
 		return notVisible;
 	}
 
+	/**
+	 * Check WebElement present
+	 * @param element
+	 * @return Boolean
+	 */
 	public Boolean isElementPresent(WebElement element) {
 		try {
 			waitForElementVisible(element);
@@ -528,6 +658,11 @@ public abstract class BasePage {
 		return false;
 	}
 
+	/**
+	 * Check element present using string locator 
+	 * @param locator
+	 * @return Boolean
+	 */
 	public Boolean isElementPresent(String locator) {
 		Boolean result = false;
 		try {
@@ -538,6 +673,11 @@ public abstract class BasePage {
 		return result;
 	}
 
+	/**
+	 * Check element displayed using WebElement locator
+	 * @param element
+	 * @return Boolean
+	 */
 	public Boolean isElementDisplayed(WebElement element) {
 		try {
 			element.isDisplayed();
@@ -547,6 +687,11 @@ public abstract class BasePage {
 		return false;
 	}
 
+	/**
+	 * Check element displayed using string locator
+	 * @param element
+	 * @return Boolean
+	 */
 	public Boolean isElementDisplayed(String element) {
 		try {
 			getDriver().findElement(ByLocator(element)).isDisplayed();
@@ -556,6 +701,11 @@ public abstract class BasePage {
 		return false;
 	}
 
+	/**
+	 * Wait for Element not present using string locator within time
+	 * @param locator
+	 * @param timeout
+	 */
 	public void WaitForElementNotPresent(String locator, int timeout) {
 		for (int i = 0; i < timeout; i++) {
 			if (!isElementPresent(locator)) {
@@ -570,6 +720,11 @@ public abstract class BasePage {
 		}
 	}
 
+	/**
+	 * Wait for Element present using string locator within time
+	 * @param locator
+	 * @param timeout
+	 */
 	public void WaitForElementPresent(String locator, int timeout) {
 		for (int i = 0; i < timeout; i++) {
 			if (isElementPresent(locator)) {
@@ -589,6 +744,12 @@ public abstract class BasePage {
 		return divs.size();
 	}
 
+	/**
+	 * Mouse over on element then click on visible element
+	 * @param toBeHovered
+	 * @param toBeClicked
+	 * @return WebDriver
+	 */
 	public WebDriver hoverOverElementAndClick(WebElement toBeHovered, WebElement toBeClicked) {
 		Actions builder = new Actions(driver);
 		builder.moveToElement(toBeHovered).build().perform();
@@ -598,6 +759,10 @@ public abstract class BasePage {
 		return driver;
 	}
 
+	/**
+	 * Mouse click on given element
+	 * @param element
+	 */
 	public void mouseClick(WebElement element) {
 		Actions builder = new Actions(driver);
 		builder.moveToElement(element).click().build().perform();
@@ -607,7 +772,6 @@ public abstract class BasePage {
 	 * Select element by visible text
 	 * 
 	 * @Param element
-	 * 
 	 * @Patram targetValue: visible text
 	 */
 	public void selectDropDownByText(WebElement element, String targetValue) {
@@ -639,16 +803,27 @@ public abstract class BasePage {
 		new Select(element).selectByValue(targetValue);
 	}
 
+	/**
+	 * Wait for Element to become visible using By locator
+	 * @param by
+	 */
 	public void waitForElementToBecomeVisible(By by) {
 		WebDriverWait wait = new WebDriverWait(driver, DEFAULT_WAIT_4_PAGE);
 		wait.until(ExpectedConditions.visibilityOfElementLocated(by));
 	}
 
+	/**
+	 * Wait for Element to become invisible using By locator
+	 * @param by
+	 */
 	public void waitForElementToBecomeInvisible(By by) {
 		WebDriverWait wait = new WebDriverWait(driver, 180);
 		wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
 	}
 
+	/**
+	 * Wait for Ajax request to be complete
+	 */
 	public void waitForAjaxRequestsToComplete() {
 		(new WebDriverWait(driver, DEFAULT_WAIT_4_PAGE)).until(new ExpectedCondition<Boolean>() {
 			public Boolean apply(WebDriver d) {
@@ -658,6 +833,10 @@ public abstract class BasePage {
 		});
 	}
 
+	/**
+	 * Wait for page loaded
+	 * @param driver
+	 */
 	public void waitForPageLoaded(WebDriver driver) {
 		ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
 			public Boolean apply(WebDriver driver) {
@@ -668,6 +847,11 @@ public abstract class BasePage {
 		wait.until(expectation);
 	}
 
+	/**
+	 * Check web element in present using by locator
+	 * @param by
+	 * @return boolean
+	 */
 	public boolean isElementPresent(By by) {
 		try {
 			driver.findElement(by);
@@ -677,10 +861,21 @@ public abstract class BasePage {
 		return true;
 	}
 
+	/**
+	 * Check Text is present on web page
+	 * @param text
+	 * @return boolean
+	 */
 	public boolean isTextPresentOnPage(String text) {
 		return driver.findElement(By.tagName("body")).getText().contains(text);
 	}
 
+	/**
+	 * Check file available for download
+	 * @param webElement
+	 * @return boolean
+	 * @throws Exception
+	 */
 	public boolean isFileAvailableForDownload(WebElement webElement) throws Exception {
 		int code = 0;
 		String downloadUrl = webElement.getAttribute("href");
@@ -692,6 +887,10 @@ public abstract class BasePage {
 		return code == 200;
 	}
 
+	/**
+	 * Take Remote WebDriver screenshot 
+	 * @param fileName
+	 */
 	public void takeRemoteWebDriverScreenShot(String fileName) {
 		File screenshot = ((TakesScreenshot) new Augmenter().augment(driver)).getScreenshotAs(OutputType.FILE);
 		try {
@@ -701,6 +900,11 @@ public abstract class BasePage {
 		}
 	}
 
+	/**
+	 * Wait for text not to be visible
+	 * @param text
+	 * @param timeoutInSeconds
+	 */
 	public void waitForTextNotToBeVisible(String text, int timeoutInSeconds) {
 		int startWait = 0;
 		while (isTextPresentOnPage(text)) {
@@ -717,6 +921,11 @@ public abstract class BasePage {
 		ajaxWait.until(ExpectedConditions.visibilityOf(element));
 	}
 
+	/**
+	 * Check radio button selected
+	 * @param element
+	 * @return Boolean
+	 */
 	public Boolean selectRadioBtn(WebElement element) {
 
 		boolean flag = element.isSelected();
@@ -750,14 +959,6 @@ public abstract class BasePage {
 		int randomNum = ThreadLocalRandom.current().nextInt(min, max);
 		return randomNum;
 	}
-
-	// public void sleep(int time) {
-	// try {
-	// Thread.sleep(time);
-	// } catch (InterruptedException e) {
-	// e.printStackTrace();
-	// }
-	// }
 
 	/**
 	 * Verify WebElement present on the page
@@ -1069,16 +1270,22 @@ public abstract class BasePage {
 		return list;
 	}
 
+	/**
+	 * Integer ArrayList sorting as Ascending order.
+	 * 
+	 * @param list
+	 * @return sorted integer list 
+	 */
 	public ArrayList<Integer> sortingAscendingInteger(ArrayList<Integer> list) {
 		Collections.sort(list);
 		return list;
 	}
-
+	
 	/**
 	 * ArrayList sorting as Descending order.
 	 * 
 	 * @param list
-	 * @return
+	 * @return sorted string list
 	 */
 	public ArrayList<String> sortingDescending(ArrayList<String> list) {
 		Collections.sort(list);
@@ -1086,6 +1293,12 @@ public abstract class BasePage {
 		return list;
 	}
 
+	/**
+	 * Integer ArrayList sorting as Descending order.
+	 * 
+	 * @param list
+	 * @return sorted integer list
+	 */
 	public ArrayList<Integer> sortingDescendingInterger(ArrayList<Integer> list) {
 		Collections.sort(list);
 		Collections.reverse(list);
@@ -1212,7 +1425,8 @@ public abstract class BasePage {
 	 * @param secondNumber
 	 */
 	public void verifyNumberMatched(int firstNumber, int secondNumber) {
-		Assert.assertEquals(firstNumber, secondNumber, firstNumber + " and " + secondNumber + " number not matched");
+		Assert.assertEquals(firstNumber, secondNumber,
+				"Numbers not matched, FirstNumber:" + firstNumber + " SecondNumber:" + secondNumber);
 	}
 
 	/**
@@ -1226,7 +1440,8 @@ public abstract class BasePage {
 		if (firstNumber >= secondNumber) {
 			status = true;
 		}
-		Assert.assertTrue(status, firstNumber + " not equals with " + secondNumber);
+		Assert.assertTrue(status,
+				"FirstNumber is not equals or greater, FirstNumber:" + firstNumber + " SecondNumber:" + secondNumber);
 	}
 
 	/**
@@ -1296,14 +1511,14 @@ public abstract class BasePage {
 			actualText = element.getAttribute("value");
 		if (actualText == null)
 			actualText = "";
-		Assert.assertTrue(actualText.matches(pattern), "Assert fails test does not matches to the pattern");
+		Assert.assertTrue(actualText.matches(pattern),
+				"Actual text does not matches to the pattern, Actual:" + actualText + " Pattern:" + pattern);
 	}
 
 	/**
-	 * Return the current date in given format
+	 * Return the current date in yyyy-MM-dd format
 	 * 
-	 * @param format
-	 * @return
+	 * @return Date
 	 */
 	public static String GetCurrentDate() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -1312,10 +1527,9 @@ public abstract class BasePage {
 	}
 
 	/**
-	 * Return the current time in given format
+	 * Return the current time in hh:mm a format
 	 * 
-	 * @param format
-	 * @return
+	 * @return time
 	 */
 	public static String getCurrentTime() {
 		DateFormat timeFormat = new SimpleDateFormat("hh:mm a");
@@ -1353,9 +1567,15 @@ public abstract class BasePage {
 			actualText = element.getAttribute("value");
 		if (actualText == null)
 			actualText = "";
-		Assert.assertTrue(!actualText.contains(text), actualText + " contains " + text);
+		Assert.assertTrue(!actualText.contains(text), 
+				"Element contains given text, Actual:"+actualText + " Expected:" + text);
 	}
 
+	/**
+	 * Mouse over on given Element
+	 * 
+	 * @param toBeHovered
+	 */
 	public void hoverOverElement(WebElement toBeHovered) {
 		Actions builder = new Actions(driver);
 		builder.moveToElement(toBeHovered).build().perform();
